@@ -6,24 +6,14 @@ namespace TextQuestKapkaev
     {
         static void Main(string[] args)
         {
-            Start();
-            Road();
+            StartGame();
         }
 
-        static void Start()
-        {
-            Console.WriteLine("Привет путник! Что ты хочешь?");
-
-            Console.WriteLine("");
-
-            Console.WriteLine(" 1. Поговорить с бродягой");
-
-            Console.WriteLine(" 2. Осмотреть окресности");
-        }
-
-        static void Road()
+        static void StartGame()
         {
             Game quest = new Game();
+
+            quest.InitGame();
 
             quest.ConsoleReader();
         }
@@ -33,59 +23,107 @@ namespace TextQuestKapkaev
 
     class Game
     {
-        private static bool isGetResourse = false;
+        //получены ли ресурсы от бродяги
+        private bool isGetResourse = false;
 
-        private static ConsoleKeyInfo cki;
+        //приветсвенная фраза
+        private string hello = "Привет путник! ";
+
+        //вопрос пользователю
+        private string ask = "Что ты хочешь?";
+
+        //первое действие
+        private string firstAction = " 1. Поговорить с бродягой";
+
+        //второе действие
+        private string secondAction = " 2. Осмотреть окресности";
+
+        //если ничего не происходит
+        private string nothing = "...";
+
+        //фраза бродяги
+        private string trampPhrase = "Сегодня я щедрый! Держи ";
+
+        //вариант артефакта от бродяги
+        private string trampGiftOption = "медальон";
+
+        //монеты 
+        private static int coins = 0;
+
+        //описание окружения
+        private string aboutEnvironment = "Вы стоите на дороге, перед вами бродяга, погода отличная и ветер попутный!";
+
+        //сообщвет какую клавишу нажать для выхода
+        private string endGame = "Для выхода из игры нажмите клафишу ";
+
+        //клавиша выхода
+        private string exit = "q";
+
+        public void InitGame()
+        {
+            Console.WriteLine(hello + ask);
+
+            Console.WriteLine(firstAction);
+
+            Console.WriteLine(secondAction);
+
+            Console.WriteLine(endGame + exit);
+
+        }
+
+        string read;
 
         public void ConsoleReader()
         {
-            do
+            while(read != exit)
             {
+                read = Console.ReadLine();
+
+                if (read == exit) return;
+
                 int outParse;
 
-                string one = Console.ReadLine();
-
-                var isParse = int.TryParse(one, out outParse);
+                var isParse = int.TryParse(read, out outParse);
 
                 if (isParse)
                 {
-                    Quest(outParse);
+                    Quest(outParse, 50);
                 }
                 else
                 {
-                    Console.WriteLine("Что ты хочешь?");
+                    Console.WriteLine(ask);
 
-                    Console.WriteLine("");
+                    Console.WriteLine(firstAction);
 
-                    Console.WriteLine(" 1. Поговорить с бродягой");
+                    Console.WriteLine(secondAction);
 
-                    Console.WriteLine(" 2. Осмотреть окресности");
+                    Console.WriteLine(endGame + exit);
                 }
-
-            } while (cki.Key != ConsoleKey.Escape);
+            }
         }
 
-        private void Quest(int userInput)
+        private void Quest(int userInput, int getCoins)
         {
             if (userInput == 1)
             {
                 if (!isGetResourse)
                 {
                     isGetResourse = true;
-                    Console.WriteLine("Сегодня я щедрый, держи медальон и 50 монет");
+
+                    coins += getCoins;
+
+                    Console.WriteLine(trampPhrase + trampGiftOption + " и " + coins.ToString() + " монет!");
                 }
                 else
                 {
-                    Console.WriteLine("...");
+                    Console.WriteLine(nothing);
                 }
             }
             else if (userInput == 2)
-                Console.WriteLine("Вы стоите на дороге, перед вами бродяга, погода отличная и ветер попутный!");
+                Console.WriteLine(aboutEnvironment);
 
             else
-                Console.WriteLine("...");
+                Console.WriteLine(nothing);
         }
-
-
     }
 }
